@@ -1,0 +1,47 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User{
+    id        Int       @id @default(autoincrement())
+    userName String @unique
+    password String
+    qrcodes Qrcode[]
+    qrtemps Qrtemp[]
+    qrcodeCount Int? @default(0)
+    siteUrl String
+    companyName String @unique
+    createAt DateTime @default(now())
+    updateAt DateTime @updatedAt
+    userActivate Boolean @default(true)
+}
+
+model Qrcode{
+    id        Int       @id @default(autoincrement())
+    qrCodeName String
+    forwardUrl String
+    requestUrl String @unique
+    img String
+    userId Int
+    user User @relation(fields: [userId], references: [id])
+    createAt DateTime @default(now())
+    updateAt DateTime @updatedAt
+}
+
+model Qrtemp{
+    id        Int       @id @default(autoincrement())
+    qrTempName String
+    forwardUrl String
+    userId Int
+    user User @relation(fields: [userId], references: [id])
+    createAt DateTime @default(now())
+    updateAt DateTime @updatedAt
+}
